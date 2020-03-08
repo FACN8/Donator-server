@@ -1,0 +1,25 @@
+{
+  "name": "donator-server",
+  "version": "1.0.0",
+  "description": "Backend for our Donator-client",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FACN8/Donator-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FACN8/Donator-server/issues"
+  },
+  "homepage": "https://github.com/FACN8/Donator-server#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
+    "helmet": "^3.21.3"
+  }
+}
