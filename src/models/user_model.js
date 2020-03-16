@@ -15,7 +15,7 @@ const findByUsername = name =>
     );
   });
 
-  const findOrganization = () =>
+  const findOrganizations = () =>
   new Promise((resolve, reject) => {
     // Getting info about which organizations is chosen by the user
     dbConnection.query(
@@ -73,5 +73,5 @@ module.exports = {
   findByUsername,
   addNewUser,
   addDonation,
-  findOrganization
+  findOrganizations
 };
