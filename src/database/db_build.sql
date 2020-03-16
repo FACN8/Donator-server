@@ -1,6 +1,8 @@
 BEGIN;
 
-DROP TABLE IF EXISTS users,organizations,donations CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS organizations CASCADE;
+DROP TABLE IF EXISTS donations CASCADE;
 
 CREATE TABLE users (
     ID SERIAL PRIMARY KEY,
@@ -12,15 +14,6 @@ CREATE TABLE users (
     phone_number VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE donations (
-    ID SERIAL PRIMARY KEY,
-    FOREIGN KEY (user_id) REFERENCES users(ID)
-    FOREIGN KEY (org_id) REFERENCES organizations(ID)
-    type VARCHAR(255) NOT NULL,
-    info VARCHAR(255) NOT NULL,
-    delivery VARCHAR(255) NOT NULL
-);
-
 CREATE TABLE organizations (
     ID SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -28,6 +21,23 @@ CREATE TABLE organizations (
     address VARCHAR(255) NOT NULL,
     info VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE donations (
+    ID SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    org_id INTEGER NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    info VARCHAR(255) NOT NULL,
+    delivery VARCHAR(255) NOT NULL,
+     FOREIGN KEY (user_id) REFERENCES users(ID),
+    FOREIGN KEY (org_id) REFERENCES organizations(ID)
+);
+
+insert into organizations (name, phone_number, address, info) values ('al-basma', '+972 04 6450765', 'Paulaus HaShishi 10', 'Donate NOW NIGGAS');
+insert into organizations (name, phone_number, address, info) values ('al-basma', '+972 04 6450765', 'Paulaus HaShishi 10', 'Donate NOW NIGGAS');
+insert into organizations (name, phone_number, address, info) values ('al-basma', '+972 04 6450765', 'Paulaus HaShishi 10', 'Donate NOW NIGGAS');
+insert into organizations (name, phone_number, address, info) values ('al-basma', '+972 04 6450765', 'Paulaus HaShishi 10', 'Donate NOW NIGGAS');
+
 
 
 COMMIT;
