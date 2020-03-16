@@ -33,7 +33,7 @@ const findByUsername = name =>
 const addNewUser = (user_name, password, full_name, address, city, phone_number) =>
   new Promise((resolve, reject) => {
     // if the user exists then do not add him to our database
-    findByUsername(name)
+    findByUsername(user_name)
       .then(() => {
         dbConnection.query(
           "INSERT INTO users (user_name, password, full_name, address, city, phone_number) values($1, $2, $3,$4,$5,$6)",
