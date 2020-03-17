@@ -2,14 +2,14 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 
-const { findByUsername, addNewUser } = require("../models/user_model.js");
+const { user_model } = require("../models");
 
 exports.addUser = (req, res, err) => {
   const { username, password, fullName, address, city, phoneNumber } = req.body;
   bcrypt.hash(password, saltRounds, async function(err, hash) {
     try {
-      await addNewUser(username, hash, fullName, address, city, phoneNumber);
-      const user = await findByUsername(req.body.username);
+      await user_model.addNewUser(username, hash, fullName, address, city, phoneNumber);
+      const user = await user_model.findByUsername(req.body.username);
 
       const userInformation = {
         userId: user[0].id,
@@ -33,7 +33,7 @@ exports.addUser = (req, res, err) => {
 
 exports.authenticate = async (req, res) => {
   try {
-    const user = await findByUsername(req.body.username);
+    const user = await user_model.findByUsername(req.body.username);
     bcrypt.compare(req.body.password, user[0].password, function(err, result) {
       if (err || !result) {
         res.end({ redirect: "/LogIn", error: "Password is wrong" });
