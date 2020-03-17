@@ -18,19 +18,15 @@ exports.addUser = (req, res, err) => {
       };
       jwt.sign(userInformation, process.env.JWT_SECRET, function(err, token) {
         if (err) {
-          res.end(
-            JSON.stringify({
-              redirect: "/LogIn",
-              error: "Error in our server,please contact the owner"
-            })
-          );
+          res.end({
+            redirect: "/LogIn",
+            error: "Error in our server,please contact the owner"
+          });
         }
-        res.end(JSON.stringify({ redirect: "/OrgInfo",token }));
+        res.end({ redirect: "/OrgInfo", token });
       });
     } catch (e) {
-      res.end(
-        JSON.stringify({ redirect: "/SignUp", error: "user already exist" })
-      );
+      res.end({ redirect: "/SignUp", error: "user already exist" });
     }
   });
 };
@@ -40,9 +36,7 @@ exports.authenticate = async (req, res) => {
     const user = await findByUsername(req.body.username);
     bcrypt.compare(req.body.password, user[0].password, function(err, result) {
       if (err || !result) {
-        res.end(
-          JSON.stringify({ redirect: "/LogIn", error: "Password is wrong" })
-        );
+        res.end({ redirect: "/LogIn", error: "Password is wrong" });
       }
       const userInformation = {
         userId: user[0].id,
@@ -51,27 +45,15 @@ exports.authenticate = async (req, res) => {
       };
       jwt.sign(userInformation, process.env.JWT_SECRET, function(err, token) {
         if (err) {
-          res.end(
-            JSON.stringify({
-              redirect: "/LogIn",
-              error: "Error in our server,please contact the owner"
-            })
-          );
+          res.end({
+            redirect: "/LogIn",
+            error: "Error in our server,please contact the owner"
+          });
         }
-        res.end(JSON.stringify({ redirect: "/OrgInfo",token }));
+        res.end({ redirect: "/OrgInfo", token });
       });
     });
   } catch (error) {
-    res.end(
-      JSON.stringify({ redirect: "/LogIn", error: "Username not found" })
-    );
+    res.end({ redirect: "/LogIn", error: "Username not found" });
   }
-};
-
-exports.SignUp = (req, res) => {
-  console.log(req.body);
-  var user_name = req.body.username;
-  var password = req.body.password;
-  console.log("User name = " + user_name + ", password is " + password);
-  res.end("/OrgInfo");
 };
