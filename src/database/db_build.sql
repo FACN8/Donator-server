@@ -29,7 +29,7 @@ CREATE TABLE donations (
     type VARCHAR(255) NOT NULL,
     info VARCHAR(255) NOT NULL,
     delivery VARCHAR(255) NOT NULL,
-     FOREIGN KEY (user_id) REFERENCES users(ID),
+    FOREIGN KEY (user_id) REFERENCES users(ID),
     FOREIGN KEY (org_id) REFERENCES organizations(ID)
 );
 
