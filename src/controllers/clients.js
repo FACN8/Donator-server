@@ -1,52 +1,52 @@
 const { user_model, org_model } = require("../models");
 
-exports.getOrgInfo = async (req, res, err) => {
-  if (err) res.end({ error: "There is a Problem with the server" });
-
+exports.getOrgInfo = async (req, res) => {
   try {
     const orgInfo = await org_model.getOrganizations();
-    res.end({ orgInfo });
+    res.send({ orgInfo });
   } catch (error) {
-    res.end({ error });
+    res.send({ error });
   }
 };
 
-exports.getUserInfo = async (req, res, err) => {
-  if (err) res.end({ error: "There is a Problem with the server" });
-
+exports.getUserInfo = async (req, res) => {
   try {
-    const userInfo = await user_model.findByUsername(res.locals.user);
-    res.end({ userInfo });
+    const [userInfo] = await user_model.findByUsername(res.locals.user);
+    res.send({ userInfo });
   } catch (error) {
-    res.end({ error });
+    res.send({ error });
   }
 };
-exports.getUserStatistics = async (req, res, err) => {
-  if (err) res.end({ error: "There is a Problem with the server" });
-
+exports.getUserStatistics = async (req, res) => {
   try {
     let orgDonations = [];
-    const userDonations = await user_model.getUserDonations(res.locals.id);
-    await userDonations.map(async donationInfo => {
-      const orgName = await org_model.findOrganizationName(donationInfo.org_id);
-      orgDonations.push({
-        org_name: orgName[0],
-        donationCount: donationInfo.count
+    let totalCount = 0;
+    const userDonations = await user_model.getUserDonations(res.locals.userId);
+    try {
+      await userDonations.map(async donationInfo => {
+        const orgName = await org_model.findOrganizationName(
+          donationInfo.org_id
+        );
+        orgDonations.push({
+          org_name: orgName[0],
+          donationCount: donationInfo.count
+        });
+        totalCount += donationInfo.count;
       });
-    });
-    const Donations = {
-      totalDonations: userDonations.length,
+    } catch (err) {}//the userDonations is empty so this why it will be skiped
+
+    const donations = {
+      totalDonations: totalCount ? totalCount : 0,
       orgDonations
     };
-    res.end({ Donations });
+    res.send({ donations });
   } catch (error) {
-    res.end({ error });
+    console.log(error);
+    res.send({ error });
   }
 };
 
-exports.Donate = async (req, res, err) => {
-  if (err) res.end({ error: "There is a Problem with the server" });
-
+exports.Donate = async (req, res) => {
   const { org_id, donation_type, donation_info, delivery_time } = req.body;
 
   try {
@@ -57,28 +57,25 @@ exports.Donate = async (req, res, err) => {
       donation_info,
       delivery_time
     );
-    res.end({ redirect: "/OrgInfo", message: "Thank you for your donation" });
+    res.send({ redirect: "/OrgInfo", message: "Thank you for your donation" });
   } catch (error) {
-    res.end({ error });
+    res.send({ error });
   }
 };
 
-exports.updateUserProfile = async (req, res, err) => {
-  if (err) res.end({ error: "There is a Problem with the server" });
-
-  const { fullName, password, address, city, phoneNumber } = req.body;
-
+exports.updateUserProfile = async (req, res) => {
+  const { full_name, password, address, city, phone_number } = req.body;
   try {
     await user_model.updateUser(
-      fullName,
+      full_name,
       password,
       address,
       city,
-      phoneNumber,
-      res.locals.id
+      phone_number,
+      res.locals.userId
     );
-    res.end({ message: "Your profile has been successfully update" });
+    res.send({ message: "Your profile has been successfully update" });
   } catch (error) {
-    res.end({ error });
+    res.send({ error });
   }
 };
