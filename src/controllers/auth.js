@@ -4,13 +4,27 @@ const jwt = require("jsonwebtoken");
 
 const { user_model } = require("../models");
 
-exports.addUser = (req, res, err) => {
+exports.addUser = (req, res) => {
+
   const { username, password, fullName, address, city, phoneNumber } = req.body;
   bcrypt.hash(password, saltRounds, async function(err, hash) {
+    if (err) {
+      res.send({
+        redirect: "/LogIn",
+        error: "Error in our server,please contact the owner"
+      });
+    }
     try {
-      await user_model.addNewUser(username, hash, fullName, address, city, phoneNumber);
-      const user = await user_model.findByUsername(req.body.username);
+      await user_model.addNewUser(
+        username,
+        hash,
+        fullName,
+        address,
+        city,
+        phoneNumber
+      );
 
+      const user = await user_model.findByUsername(req.body.username);
       const userInformation = {
         userId: user[0].id,
         userName: user[0].user_name,
@@ -18,15 +32,15 @@ exports.addUser = (req, res, err) => {
       };
       jwt.sign(userInformation, process.env.JWT_SECRET, function(err, token) {
         if (err) {
-          res.end({
+          res.send({
             redirect: "/LogIn",
             error: "Error in our server,please contact the owner"
           });
         }
-        res.end({ redirect: "/OrgInfo", token });
+        res.send({ redirect: "/OrgInfo", token });
       });
     } catch (e) {
-      res.end({ redirect: "/SignUp", error: "user already exist" });
+      res.send({ redirect: "/SignUp", error: "user already exist" });
     }
   });
 };
@@ -36,7 +50,7 @@ exports.authenticate = async (req, res) => {
     const user = await user_model.findByUsername(req.body.username);
     bcrypt.compare(req.body.password, user[0].password, function(err, result) {
       if (err || !result) {
-        res.end({ redirect: "/LogIn", error: "Password is wrong" });
+        res.send({ redirect: "/LogIn", error: "Password is wrong" });
       }
       const userInformation = {
         userId: user[0].id,
@@ -45,15 +59,15 @@ exports.authenticate = async (req, res) => {
       };
       jwt.sign(userInformation, process.env.JWT_SECRET, function(err, token) {
         if (err) {
-          res.end({
+          res.send({
             redirect: "/LogIn",
             error: "Error in our server,please contact the owner"
           });
         }
-        res.end({ redirect: "/OrgInfo", token });
+        res.send({ redirect: "/OrgInfo", token });
       });
     });
   } catch (error) {
-    res.end({ redirect: "/LogIn", error: "Username not found" });
+    res.send({ redirect: "/LogIn", error: "Username not found" });
   }
 };

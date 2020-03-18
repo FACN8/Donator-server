@@ -43,7 +43,7 @@ const addNewUser = (
       });
   });
 
-  const updateUser = (full_name, password, address, city, user_id) => {
+  const updateUser = (full_name, password, address, city,phone_number, user_id) => {
     new Promise((resolve, reject) => {
       // Update user profile based on his id
       dbConnection.query(
