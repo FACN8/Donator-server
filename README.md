@@ -2,14 +2,11 @@
 # Donator-Server
 
 By: @92yo, @francisA2000, @LinaQh92
----
-
-## About 
 
 Backend for our [Donator-client website](https://github.com/FACN8/Donator) on GitHub
 ---
 
-## :floppy_disk::package: Installing locally 
+### :floppy_disk::package: Installing locally 
 
 1. clone this rep.
 2. cd into the cloned rep.
