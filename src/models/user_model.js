@@ -76,7 +76,7 @@ const addDonation = (user_id, org_id, type, info, delivery) => {
   });
 };
 
-const getUserDonations = user_id => {
+const getUserDonations = user_id => 
   new Promise((resolve, reject) => {
     // get all the donations that where mae by user
     dbConnection.query(
@@ -90,7 +90,6 @@ const getUserDonations = user_id => {
       }
     );
   });
-};
 
 module.exports = {
   findByUsername,

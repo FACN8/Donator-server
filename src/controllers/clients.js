@@ -5,7 +5,7 @@ exports.getOrgInfo = async (req, res) => {
     const orgInfo = await org_model.getOrganizations();
     res.send({ orgInfo });
   } catch (error) {
-    res.send({ error });
+    res.send({ error: "something went wrong with getting the Organizations" });
   }
 };
 
@@ -21,19 +21,21 @@ exports.getUserStatistics = async (req, res) => {
   try {
     let orgDonations = [];
     let totalCount = 0;
+
     const userDonations = await user_model.getUserDonations(res.locals.userId);
-    try {
-      await userDonations.map(async donationInfo => {
+
+    await Promise.all(
+      userDonations.map(async donationInfo => {
         const orgName = await org_model.findOrganizationName(
           donationInfo.org_id
         );
         orgDonations.push({
-          org_name: orgName[0],
+          org_name: orgName[0].name,
           donationCount: donationInfo.count
         });
-        totalCount += donationInfo.count;
-      });
-    } catch (err) {}//the userDonations is empty so this why it will be skiped
+        totalCount += parseInt(donationInfo.count);
+      })
+    );
 
     const donations = {
       totalDonations: totalCount ? totalCount : 0,
@@ -41,7 +43,6 @@ exports.getUserStatistics = async (req, res) => {
     };
     res.send({ donations });
   } catch (error) {
-    console.log(error);
     res.send({ error });
   }
 };
@@ -51,7 +52,7 @@ exports.Donate = async (req, res) => {
 
   try {
     await user_model.addDonation(
-      res.locals.id,
+      res.locals.userId,
       org_id,
       donation_type,
       donation_info,
@@ -59,7 +60,7 @@ exports.Donate = async (req, res) => {
     );
     res.send({ redirect: "/OrgInfo", message: "Thank you for your donation" });
   } catch (error) {
-    res.send({ error });
+    res.send({ error: "Your donation was unsuccessful,please try again" });
   }
 };
 
@@ -76,6 +77,9 @@ exports.updateUserProfile = async (req, res) => {
     );
     res.send({ message: "Your profile has been successfully update" });
   } catch (error) {
-    res.send({ error });
+    res.send({
+      error:
+        "The server couldn't update Your profile, try refreshing your browser"
+    });
   }
 };
